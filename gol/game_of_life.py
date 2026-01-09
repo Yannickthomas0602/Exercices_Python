@@ -11,14 +11,15 @@ def clear_screen_unix():
 def random_boolean():
     return bool(random.getrandbits(1))
 
+
 class GameOfLife:
     def __init__(self, width=50, height=50):
         self.height = height
         self.width = width
+    
 
         # Liste dont chaque élément est une cellule de la grille
         self.grid = []
-
     # Méthode affichant la grille du jeu de la vie
     def display(self):
         s = "┌" + ("─" * (self.width * 2)) + "┐\n"
@@ -44,3 +45,52 @@ class GameOfLife:
         else:
             ind = (y * self.width) + x
             return self.grid[ind]
+    def get_coord(self,ind) : 
+        x = ind % self.width
+        y = ind // self.width
+        return (x, y)
+    def update(self) : 
+        for i in range(len(self.grid)) :
+            cell = self.grid[i]
+            (x , y) = self.get_coord(i)
+            new_liste = []
+            # compter le nombre de voisin en vie 
+            nb_voisins = 0
+            if self.get_cell(x-1, y-1) : 
+                nb_voisins += 1
+            if self.get_cell(x, y-1) : 
+                nb_voisins += 1
+            if self.get_cell(x+1, y-1) :
+                nb_voisins += 1
+            if self.get_cell(x-1, y) : 
+                nb_voisins += 1
+            if self.get_cell(x+1, y) :
+                nb_voisins += 1
+            if self.get_cell(x-1, y+1) : 
+                nb_voisins += 1
+            if self.get_cell(x, y+1) : 
+                nb_voisins += 1
+            if self.get_cell(x+1, y+1) :
+                nb_voisins += 1
+            if cell : 
+                if nb_voisins < 2 : 
+                    etat_future = False
+                elif nb_voisins == 2 or nb_voisins == 3 : 
+                    etat_future = cell
+                elif nb_voisins > 3 : 
+                    etat_future = False
+            elif nb_voisins == 3 : 
+                etat_future = True
+            else : 
+                etat_future = False
+            new_liste.append(etat_future)
+        self.grid = new_liste
+            
+
+game = GameOfLife()
+
+while True : 
+    clear_screen_windows()
+    game.display()
+    game.update()
+    time.sleep(2)
